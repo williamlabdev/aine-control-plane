@@ -162,6 +162,14 @@ not expand `PortfolioRegistry.impact()` unless the manifest explicitly sets
 `impact: true`. Unresolved external providers remain on the edge evidence but
 are not returned as project records in `affected_projects`.
 
+## Further reading
+
+The governance model these contracts implement, on the author's site:
+
+- [Change-Intent Governance: The Missing Layer](https://williamlab.dev/articles/change-intent-governance) — impact computed from snapshots, decisions on an append-only ledger.
+- [Accountable Generation: Intent as the Artifact of Record](https://williamlab.dev/articles/accountable-generation) — why intent, not code, is what gets versioned and audited.
+- [Governance-Driven Engineering for AI-Native Teams](https://williamlab.dev/articles/governance-driven-engineering) — how autonomy, review, policy, and evaluation fit together.
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
