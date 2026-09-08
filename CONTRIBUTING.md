@@ -18,7 +18,10 @@ neighbours that are deliberately not dependencies of this package, so it skips
 unless both are present:
 
 - `AINE_REGISTRY_PATH` — an AINE Registry checkout, driven through its CLI.
-  Defaults to a sibling `aine-registry` directory.
+  Defaults to a sibling `aine-registry` directory. The same checkout, when
+  present, is also compared byte-for-byte against the vendored
+  `fixtures/registry.v1.schema.json` by `tests/test_registry_schema_contract.py`
+  (see the `.SOURCE` note beside it for how to refresh the copy).
 - `AINE_AIRT_LIVE_PATH` — a directory of airt run directories, each holding an
   `events.db` with the `airt.pub` beside it. Live local output, never a
   fixture, so there is no default.
