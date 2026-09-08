@@ -38,10 +38,7 @@ SCHEMA_RELATIVE = Path("registry") / "schema" / "registry.v1.schema.json"
 # Fields this consumer requires that the registry schema does not (yet) declare.
 # Each entry must name the upstream change that retires it; the sync test fails
 # once the vendored copy declares the field, so the entry cannot be forgotten.
-KNOWN_STRICTER_THAN_REGISTRY = {
-    # discovery always emits it; declared upstream in aine-registry PR #16
-    ("projects", "name"),
-}
+KNOWN_STRICTER_THAN_REGISTRY: set[tuple[str, str]] = set()
 
 
 def _registry_checkout() -> Path | None:
