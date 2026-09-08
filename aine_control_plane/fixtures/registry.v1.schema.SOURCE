@@ -1,0 +1,7 @@
+Vendored verbatim from aine-registry (Apache-2.0):
+  path:   registry/schema/registry.v1.schema.json
+  commit: 7376826 (main, after v1.7.0: declares projects[].name)
+  date:   2026-09-08
+tests/test_registry_schema_contract.py compares this copy against a sibling or
+AINE_REGISTRY_PATH checkout when one is present. Refresh by copying the file
+and updating this note; never hand-edit the schema here.
