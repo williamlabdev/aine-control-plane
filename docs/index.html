@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AINE public core: a read-only multi-repo registry, an OS-enforced scope for coding agents, and a control plane that turns their evidence into auditable records.">
+<style>body{margin:0}img{max-width:100%}</style>
+<title>AINE Public Core</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #F6F7F9; --ink: #16202A; --muted: #55636F; --rule: #D5DAE0;
+    --accent: #0F6E6E; --accent-ink: #FFFFFF; --panel: #FFFFFF; --code-bg: #EEF1F4;
+    --warn: #8A5A00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #10161C; --ink: #E6EAEE; --muted: #9AA7B2; --rule: #2A343E;
+      --accent: #4FB3B0; --accent-ink: #0B1418; --panel: #161E26; --code-bg: #1C2630;
+      --warn: #E0B15A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10161C; --ink: #E6EAEE; --muted: #9AA7B2; --rule: #2A343E;
+    --accent: #4FB3B0; --accent-ink: #0B1418; --panel: #161E26; --code-bg: #1C2630;
+    --warn: #E0B15A;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font: 17px/1.55 "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 68ch; margin: 0 auto; padding: 3.5rem 1.25rem 4rem; display: grid; gap: 2.75rem; }
+  h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.15; }
+  h1 { font-size: 2.1rem; font-weight: 700; letter-spacing: -0.01em; }
+  h2 { font-size: 1.25rem; font-weight: 700; }
+  h3 { font-size: 1rem; font-weight: 600; }
+  p { margin: 0; }
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .eyebrow { font: 600 0.72rem/1 "JetBrains Mono", ui-monospace, Menlo, monospace; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  header { display: grid; gap: 1rem; }
+  header p.lede { font-size: 1.15rem; color: var(--ink); max-width: 60ch; }
+  header p.sub { color: var(--muted); }
+  section { display: grid; gap: 1rem; }
+  .doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--rule); background: var(--panel); }
+  .door { padding: 1.1rem 1.1rem 1.2rem; display: grid; gap: 0.5rem; align-content: start; border-right: 1px solid var(--rule); }
+  .door:last-child { border-right: 0; }
+  .door .name { font: 600 0.95rem/1.2 "JetBrains Mono", ui-monospace, monospace; }
+  .door p { font-size: 0.93rem; color: var(--muted); }
+  .door .meta { font: 400 0.72rem/1.4 "JetBrains Mono", ui-monospace, monospace; color: var(--muted); }
+  @media (max-width: 640px) { .doors { grid-template-columns: 1fr; } .door { border-right: 0; border-bottom: 1px solid var(--rule); } .door:last-child { border-bottom: 0; } }
+  .fit { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  @media (max-width: 640px) { .fit { grid-template-columns: 1fr; } }
+  .fit div { display: grid; gap: 0.5rem; align-content: start; }
+  ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.35rem; }
+  li { padding-left: 0.15rem; }
+  pre { margin: 0; background: var(--code-bg); border-left: 3px solid var(--accent); padding: 0.85rem 1rem; overflow-x: auto; font: 0.86rem/1.5 "JetBrains Mono", ui-monospace, Menlo, monospace; color: var(--ink); }
+  code { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 0.9em; background: var(--code-bg); padding: 0.05em 0.35em; border-radius: 3px; }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  .step { display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.75rem; align-items: start; }
+  .step .n { font: 600 0.8rem/1.6 "JetBrains Mono", ui-monospace, monospace; color: var(--accent); padding-top: 0.15rem; }
+  .step div { display: grid; gap: 0.5rem; }
+  .step p.note { font-size: 0.9rem; color: var(--muted); }
+  .measured { font: 400 0.8rem/1.5 "JetBrains Mono", ui-monospace, monospace; color: var(--muted); border-top: 1px dashed var(--rule); padding-top: 0.5rem; }
+  .not { border: 1px solid var(--rule); padding: 1rem 1.1rem; display: grid; gap: 0.5rem; }
+  .not .eyebrow { color: var(--warn); }
+  .cta { display: grid; gap: 0.75rem; }
+  .cta .btn { display: inline-block; justify-self: start; background: var(--accent); color: var(--accent-ink); padding: 0.6rem 1rem; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+  .cta p { color: var(--muted); font-size: 0.95rem; }
+  footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--rule); padding-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+  @media (prefers-reduced-motion: no-preference) { a { transition: color 120ms; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="eyebrow">AINE · public core · Apache-2.0 / MIT</span>
+    <h1>Evidence for what an AI agent did to your repos, and a boundary it cannot write past.</h1>
+    <p class="lede">Three small tools. One scans a multi-repo workspace into a portable snapshot with drift findings, read-only. One runs a coding agent inside a declared file scope the OS enforces, and freezes a report of what it did. One turns snapshots and reports into approval, change-request and remediation records you can audit.</p>
+    <p class="sub">Built by one person and used on the author's own seven repositories. No hosted service, no SaaS, no telemetry. If you try it and it does nothing for you, say so; that is the most useful reply.</p>
+  </header>
+
+  <section>
+    <span class="eyebrow">Three doors</span>
+    <div class="doors">
+      <div class="door">
+        <span class="name">aine-registry</span>
+        <p>Scans one or more workspace roots. Emits projects, ownership, dependencies and relationships as one JSON snapshot, plus findings where declared truth and the tree disagree.</p>
+        <span class="meta">Python · stdlib only · v1.7.0 · Apache-2.0</span>
+        <a href="https://github.com/williamlabdev/aine-registry">github.com/williamlabdev/aine-registry</a>
+      </div>
+      <div class="door">
+        <span class="name">orvena</span>
+        <p>Runs a coding agent inside a file scope you declare. The OS refuses out-of-scope writes, so the boundary does not depend on the prompt. Wraps the Codex CLI today; every run leaves a frozen evidence report.</p>
+        <span class="meta">Rust · single binary · v0.9.0 · MIT</span>
+        <a href="https://github.com/williamlabdev/Orvena">github.com/williamlabdev/Orvena</a>
+      </div>
+      <div class="door">
+        <span class="name">aine-control-plane</span>
+        <p>Contracts and a reference server for approval, change-request and remediation records over the snapshot and the agent's evidence. Read-only proposals; every decision is an explicit record. Ships with a local React UI.</p>
+        <span class="meta">Python · zero dependencies · v0.8.0 · Apache-2.0</span>
+        <a href="https://github.com/williamlabdev/aine-control-plane">github.com/williamlabdev/aine-control-plane</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Is this for you</span>
+    <div class="fit">
+      <div>
+        <h3>Probably yes</h3>
+        <ul>
+          <li>You run a developer portal (Backstage, Port, Cortex, OpsLevel) and the catalog drifts from the repos.</li>
+          <li>A small team ships with coding agents and review has become "re-read the whole diff".</li>
+          <li>You want to know what an agent touched before you trust its PR.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Probably not</h3>
+        <ul>
+          <li>You want an agent that writes code. These tools never write to your repos.</li>
+          <li>You need a hosted dashboard with SSO. There is none.</li>
+          <li>One repo, one developer, no agents. There is nothing here to govern yet.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Five minutes</span>
+    <div class="step">
+      <span class="n">01</span>
+      <div>
+        <h3>Snapshot a workspace you already have</h3>
+<pre><code>git clone https://github.com/williamlabdev/aine-registry
+cd aine-registry
+python3 registry/aine_registry.py --root /path/to/your/workspace discover --output snapshot.json
+python3 registry/aine_registry.py --snapshot snapshot.json findings
+python3 registry/aine_registry.py --snapshot snapshot.json view > portfolio.html</code></pre>
+        <p class="note">Nothing is written inside your workspace. Local config never travels with the snapshot, and the HTML view is a static file you can hand to someone.</p>
+        <p class="measured">measured 2026-09-08 on the author's workspace: 7 projects, 257 findings, 36 s, 3.4 MB snapshot</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="n">02</span>
+      <div>
+        <h3>Run an agent inside a declared scope</h3>
+<pre><code>cargo install --git https://github.com/williamlabdev/Orvena orvena-cli
+orvena init --provider &lt;provider&gt; --model &lt;model&gt;
+orvena run --agent codex "summarize the repository"</code></pre>
+        <p class="note">Declare which files a task may modify; everything else is read-only. The report lands in <code>.orvena/runs/&lt;timestamp&gt;/evidence.json</code> and records what the run did, not what it was told. The boundary is the filesystem: the agent still reaches its model provider over the network.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="n">03</span>
+      <div>
+        <h3>Turn evidence into records</h3>
+<pre><code>git clone https://github.com/williamlabdev/aine-control-plane
+cd aine-control-plane
+PYTHONPATH=. python3 examples/run_server.py --db ./control-plane.sqlite
+# second terminal: seed a snapshot, then open the UI
+curl -X POST http://127.0.0.1:8787/v1/snapshots -H 'content-type: application/json' --data @snapshot.json
+cd ui &amp;&amp; npm ci --include=optional --ignore-scripts &amp;&amp; npm run dev</code></pre>
+        <p class="note">A loopback server plus a local UI showing projects, relationships, impact, evidence and the change-request and remediation workflows. Needs Node for the UI. Optional; steps 01 and 02 stand on their own.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="not">
+    <span class="eyebrow">What this is not</span>
+    <p>Not a hosted product. Not an agent. Not a Backstage plugin, yet: a <code>catalog-info.yaml</code> import/export is the first thing that gets built if a portal team asks for it. Not proven at scale: the largest workspace it has run on is the author's own. Not a network sandbox: Orvena bounds files, not traffic.</p>
+  </section>
+
+  <section class="cta">
+    <span class="eyebrow">Talk to the author</span>
+    <a class="btn" href="https://github.com/williamlabdev/aine-registry/issues/new">Open an issue</a>
+    <p>On whichever repo you tried. One sentence is enough: what did you expect it to do that it did not?</p>
+  </section>
+
+  <footer>
+    <span>Source for all three: <a href="https://github.com/williamlabdev">github.com/williamlabdev</a></span>
+    <span>Page updated 2026-09-09</span>
+  </footer>
+</main>
+</body>
+</html>
