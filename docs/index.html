@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="AINE public core: a read-only multi-repo registry, an OS-enforced scope for coding agents, and a control plane that turns their evidence into auditable records.">
+<meta name="description" content="aine-control-plane: dependency-free Python primitives for read-only portfolio governance over aine-registry snapshots and agent evidence. Contracts, records, a reference server and a local UI.">
 <style>body{margin:0}img{max-width:100%}</style>
-<title>AINE Public Core</title>
+<title>AINE Control Plane</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
   :root {
@@ -40,7 +40,7 @@
   header p.lede { font-size: 1.15rem; color: var(--ink); max-width: 60ch; }
   header p.sub { color: var(--muted); }
   section { display: grid; gap: 1rem; }
-  .doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--rule); background: var(--panel); }
+  .doors { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border: 1px solid var(--rule); background: var(--panel); }
   .door { padding: 1.1rem 1.1rem 1.2rem; display: grid; gap: 0.5rem; align-content: start; border-right: 1px solid var(--rule); }
   .door:last-child { border-right: 0; }
   .door .name { font: 600 0.95rem/1.2 "JetBrains Mono", ui-monospace, monospace; }
@@ -72,55 +72,35 @@
 <body>
 <main>
   <header>
-    <span class="eyebrow">AINE · public core · Apache-2.0 / MIT</span>
-    <h1>Evidence for what an AI agent did to your repos, and a boundary it cannot write past.</h1>
-    <p class="lede">Three small tools. One scans a multi-repo workspace into a portable snapshot with drift findings, read-only. One runs a coding agent inside a declared file scope the OS enforces, and freezes a report of what it did. One turns snapshots and reports into approval, change-request and remediation records you can audit.</p>
-    <p class="sub">Built by one person and used on the author's own seven repositories. No hosted service, no SaaS, no telemetry. If you try it and it does nothing for you, say so; that is the most useful reply.</p>
+    <span class="eyebrow">aine-control-plane · public core · v0.8.0 · Apache-2.0</span>
+    <h1>Read-only governance records over a portfolio snapshot and the evidence agents leave behind.</h1>
+    <p class="lede">A dependency-free Python package. It ingests a portable <code>aine-registry</code> snapshot, evaluates policy and authorization deterministically, and keeps approval, change-request, remediation-plan and runner-session records where every decision is an explicit, append-only entry. A reference HTTP server and a local React UI sit on the same read-only boundary.</p>
+    <p class="sub">This repository is the public core boundary. It is not a hosted control plane, not an agent runner, and not a provider integration product. Built by one person and used on the author's own repositories.</p>
   </header>
 
   <section>
-    <span class="eyebrow">Three doors</span>
-    <div class="doors">
-      <div class="door">
-        <span class="name">aine-registry</span>
-        <p>Scans one or more workspace roots. Emits projects, ownership, dependencies and relationships as one JSON snapshot, plus findings where declared truth and the tree disagree.</p>
-        <span class="meta">Python · stdlib only · v1.7.0 · Apache-2.0</span>
-        <a href="https://github.com/williamlabdev/aine-registry">github.com/williamlabdev/aine-registry</a>
-      </div>
-      <div class="door">
-        <span class="name">orvena</span>
-        <p>Runs a coding agent inside a file scope you declare. The OS refuses out-of-scope writes, so the boundary does not depend on the prompt. Wraps the Codex CLI today; every run leaves a frozen evidence report.</p>
-        <span class="meta">Rust · single binary · v0.9.0 · MIT</span>
-        <a href="https://github.com/williamlabdev/Orvena">github.com/williamlabdev/Orvena</a>
-      </div>
-      <div class="door">
-        <span class="name">aine-control-plane</span>
-        <p>Contracts and a reference server for approval, change-request and remediation records over the snapshot and the agent's evidence. Read-only proposals; every decision is an explicit record. Ships with a local React UI.</p>
-        <span class="meta">Python · zero dependencies · v0.8.0 · Apache-2.0</span>
-        <a href="https://github.com/williamlabdev/aine-control-plane">github.com/williamlabdev/aine-control-plane</a>
-      </div>
-    </div>
+    <span class="eyebrow">What it holds</span>
+    <ul>
+      <li>Portable Registry snapshot ingest, with project, artifact, dependency, relationship and source-of-truth views, plus impact analysis.</li>
+      <li>Policy evaluation, advisory by default or opt-in enforced, with explicit <code>unknown</code> and <code>conflict</code> states.</li>
+      <li>Deterministic RBAC/ABAC authorization and retention evaluation that never deletes.</li>
+      <li>Approval, change-request, remediation-plan and runner-session workflows as read-only proposals; every decision is a record.</li>
+      <li>Append-only SQLite evidence and audit storage; JSONL, SQLite and static-fixture reference adapters.</li>
+      <li><code>integration-observation.v1</code> records that link a producer run to an ingested snapshot, for report-only Orvena and airt evidence.</li>
+      <li>JSON Schemas, fixtures and conformance tests for everything under the <code>aine.control-plane.*.v1</code> wire namespace.</li>
+    </ul>
   </section>
 
   <section>
-    <span class="eyebrow">Is this for you</span>
-    <div class="fit">
-      <div>
-        <h3>Probably yes</h3>
-        <ul>
-          <li>You run a developer portal (Backstage, Port, Cortex, OpsLevel) and the catalog drifts from the repos.</li>
-          <li>A small team ships with coding agents and review has become "re-read the whole diff".</li>
-          <li>You want to know what an agent touched before you trust its PR.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Probably not</h3>
-        <ul>
-          <li>You want an agent that writes code. Registry and control plane never write to your repos; Orvena only lets an agent write inside the scope you declared.</li>
-          <li>You need a hosted dashboard with SSO. There is none.</li>
-          <li>One repo, one developer, no agents. There is nothing here to govern yet.</li>
-        </ul>
-      </div>
+    <span class="eyebrow">Six contracts</span>
+    <p class="sub">Everything a deployment plugs in is one of these <code>typing.Protocol</code> classes in <code>aine_control_plane/contracts.py</code>. Implement the ones you need; the core never imports a provider SDK.</p>
+    <div class="doors">
+      <div class="door"><span class="name">CredentialProvider</span><p>Resolves a runtime credential reference without exposing its value.</p></div>
+      <div class="door"><span class="name">IdentityAdapter</span><p>Resolves an external subject into portable policy attributes.</p></div>
+      <div class="door"><span class="name">EvidenceSourceAdapter</span><p>Collects portable evidence from an external read-only source, such as CI results or an agent run report.</p></div>
+      <div class="door"><span class="name">EvidenceSinkAdapter</span><p>Persists or forwards portable records without changing their meaning.</p></div>
+      <div class="door"><span class="name">PortfolioViewAdapter</span><p>Renders or publishes a portable portfolio snapshot.</p></div>
+      <div class="door"><span class="name">RetentionAdapter</span><p>Evaluates retention without deleting or silently mutating records.</p></div>
     </div>
   </section>
 
@@ -129,54 +109,77 @@
     <div class="step">
       <span class="n">01</span>
       <div>
-        <h3>Snapshot a workspace you already have</h3>
-<pre><code>git clone https://github.com/williamlabdev/aine-registry
-cd aine-registry
-python3 registry/aine_registry.py --root /path/to/your/workspace discover --output snapshot.json
-python3 registry/aine_registry.py --snapshot snapshot.json findings
-python3 registry/aine_registry.py view --snapshot snapshot.json --output portfolio.html</code></pre>
-        <p class="note">Nothing is written inside your workspace. Local config never travels with the snapshot, and the HTML view is a static file you can hand to someone.</p>
-        <p class="measured">measured 2026-09-08 on the author's workspace: 7 projects, 257 findings, 36 s, 3.4 MB snapshot</p>
+        <h3>Evaluate one policy in plain Python</h3>
+<pre><code>git clone https://github.com/williamlabdev/aine-control-plane
+cd aine-control-plane
+PYTHONPATH=. python3 - &lt;&lt;'EOF'
+from aine_control_plane.contracts import AdapterContext
+from aine_control_plane.governance import evaluate_policy
+
+context = AdapterContext("request-1", actor={"id": "developer"})
+decision = evaluate_policy(
+    {"policy_id": "release", "required_checks": ["tests"]},
+    [{"check_id": "tests", "status": "pass"}],
+    context,
+)
+print(decision["status"])
+EOF</code></pre>
+        <p class="note">Python 3.9 or newer, nothing to install. Prints <code>pass</code>.</p>
       </div>
     </div>
     <div class="step">
       <span class="n">02</span>
       <div>
-        <h3>Run an agent inside a declared scope</h3>
-<pre><code>cargo install --git https://github.com/williamlabdev/Orvena orvena-cli
-orvena init --provider &lt;provider&gt; --model &lt;model&gt;
-orvena run --agent codex "summarize the repository"</code></pre>
-        <p class="note">Declare which files a task may modify; everything else is read-only. The report lands in <code>.orvena/runs/&lt;timestamp&gt;/evidence.json</code> and records what the run did, not what it was told. The boundary is the filesystem: the agent still reaches its model provider over the network.</p>
+        <h3>Run the reference server and seed a snapshot</h3>
+<pre><code>PYTHONPATH=. python3 examples/run_server.py --db ./control-plane.sqlite
+# second terminal
+curl -X POST http://127.0.0.1:8787/v1/snapshots \
+  -H 'X-AINE-Actor: developer' -H 'content-type: application/json' \
+  --data @aine_control_plane/fixtures/registry_snapshot.json</code></pre>
+        <p class="note">Loopback only, no auth beyond the actor header, SQLite on disk. Replace the fixture with a snapshot from <code>aine-registry discover</code> to see your own portfolio.</p>
       </div>
     </div>
     <div class="step">
       <span class="n">03</span>
       <div>
-        <h3>Turn evidence into records</h3>
-<pre><code>git clone https://github.com/williamlabdev/aine-control-plane
-cd aine-control-plane
-PYTHONPATH=. python3 examples/run_server.py --db ./control-plane.sqlite
-# second terminal: seed a snapshot, then open the UI
-curl -X POST http://127.0.0.1:8787/v1/snapshots -H 'X-AINE-Actor: developer' -H 'content-type: application/json' --data @snapshot.json
-cd ui &amp;&amp; npm ci --include=optional --ignore-scripts &amp;&amp; npm run dev</code></pre>
-        <p class="note">A loopback server plus a local UI showing projects, relationships, impact, evidence and the change-request and remediation workflows. Needs Node for the UI. Optional; steps 01 and 02 stand on their own.</p>
+        <h3>Open the local UI</h3>
+<pre><code>cd ui &amp;&amp; npm ci --include=optional --ignore-scripts &amp;&amp; npm run dev</code></pre>
+        <p class="note">Projects, relationships, source-of-truth rules, impact, evidence, audit events, and the change-request, remediation and runner workflows. Vite proxies <code>/v1</code> to the server. Needs Node; optional.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Where it sits</span>
+    <div class="fit">
+      <div>
+        <h3>Upstream</h3>
+        <ul>
+          <li><a href="https://github.com/williamlabdev/aine-registry">aine-registry</a> produces the portable snapshot this package ingests. The snapshot schema is vendored here and checked byte-for-byte in the test suite.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Evidence producers</h3>
+        <ul>
+          <li><a href="https://github.com/williamlabdev/Orvena">Orvena</a> runs a coding agent inside an OS-enforced file scope and freezes a run report. That report enters here as a report-only observation, never as a command.</li>
+        </ul>
       </div>
     </div>
   </section>
 
   <section class="not">
     <span class="eyebrow">What this is not</span>
-    <p>Not a hosted product. Not an agent. Not a Backstage plugin, yet: a <code>catalog-info.yaml</code> import/export is the first thing that gets built if a portal team asks for it. Not proven at scale: the largest workspace it has run on is the author's own. Not a network sandbox: Orvena bounds files, not traffic.</p>
+    <p>Not hosted. Not an agent, and it never writes to a repository. Not a Backstage plugin, yet: a <code>catalog-info.yaml</code> adapter is the first thing that gets built if a portal team asks for it. Not proven beyond the author's own portfolio.</p>
   </section>
 
   <section class="cta">
     <span class="eyebrow">Talk to the author</span>
-    <a class="btn" href="https://github.com/williamlabdev/aine-registry/issues/new">Open an issue</a>
-    <p>On whichever repo you tried. One sentence is enough: what did you expect it to do that it did not?</p>
+    <a class="btn" href="https://github.com/williamlabdev/aine-control-plane/issues/new">Open an issue</a>
+    <p>One sentence is enough: what did you expect it to do that it did not?</p>
   </section>
 
   <footer>
-    <span>Source for all three: <a href="https://github.com/williamlabdev">github.com/williamlabdev</a></span>
+    <span>Source: <a href="https://github.com/williamlabdev/aine-control-plane">github.com/williamlabdev/aine-control-plane</a></span>
     <span>Page updated 2026-09-09</span>
   </footer>
 </main>
