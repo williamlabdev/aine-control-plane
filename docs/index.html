@@ -90,7 +90,7 @@
       <div class="door">
         <span class="name">orvena</span>
         <p>Runs a coding agent inside a file scope you declare. The OS refuses out-of-scope writes, so the boundary does not depend on the prompt. Wraps the Codex CLI today; every run leaves a frozen evidence report.</p>
-        <span class="meta">Rust · single binary · v0.9.0 · MIT</span>
+        <span class="meta">Rust · single binary · v0.8.0 · MIT</span>
         <a href="https://github.com/williamlabdev/Orvena">github.com/williamlabdev/Orvena</a>
       </div>
       <div class="door">
@@ -134,7 +134,7 @@
 cd aine-registry
 python3 registry/aine_registry.py --root /path/to/your/workspace discover --output snapshot.json
 python3 registry/aine_registry.py --snapshot snapshot.json findings
-python3 registry/aine_registry.py --snapshot snapshot.json view > portfolio.html</code></pre>
+python3 registry/aine_registry.py view --snapshot snapshot.json --output portfolio.html</code></pre>
         <p class="note">Nothing is written inside your workspace. Local config never travels with the snapshot, and the HTML view is a static file you can hand to someone.</p>
         <p class="measured">measured 2026-09-08 on the author's workspace: 7 projects, 257 findings, 36 s, 3.4 MB snapshot</p>
       </div>
@@ -157,7 +157,7 @@ orvena run --agent codex "summarize the repository"</code></pre>
 cd aine-control-plane
 PYTHONPATH=. python3 examples/run_server.py --db ./control-plane.sqlite
 # second terminal: seed a snapshot, then open the UI
-curl -X POST http://127.0.0.1:8787/v1/snapshots -H 'content-type: application/json' --data @snapshot.json
+curl -X POST http://127.0.0.1:8787/v1/snapshots -H 'X-AINE-Actor: developer' -H 'content-type: application/json' --data @snapshot.json
 cd ui &amp;&amp; npm ci --include=optional --ignore-scripts &amp;&amp; npm run dev</code></pre>
         <p class="note">A loopback server plus a local UI showing projects, relationships, impact, evidence and the change-request and remediation workflows. Needs Node for the UI. Optional; steps 01 and 02 stand on their own.</p>
       </div>
