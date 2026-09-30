@@ -6,7 +6,7 @@ from typing import Any, Iterable, Mapping
 from uuid import uuid4
 
 from .approval import ApprovalWorkflow
-from .contracts import AdapterContext
+from .contracts import AdapterContext, attribute_actor
 from .store import LocalRecordStore
 from .validation import find_local_paths
 
@@ -112,7 +112,7 @@ class ChangeRequestWorkflow:
             "title": str(request.get("title", "")),
             "description": str(request.get("description", "")),
             "scope": normalized_scope,
-            "requested_by": str(request.get("requested_by") or context.actor.get("id", "unknown")),
+            **attribute_actor(request, context, "requested_by"),
             "owner": str(request.get("owner") or context.actor.get("id", "unknown")),
             "acceptance_criteria": _list_strings(request.get("acceptance_criteria", [])),
             "source_of_truth": _list_strings(request.get("source_of_truth", [])),

@@ -19,6 +19,10 @@ smallest reproducible case.
 - the local store is append-only by record identity and reports conflicting writes;
 - policy and authorization evaluation preserve `unknown` and `conflict` outcomes;
 - consumers must provide the authenticated actor and network boundary before exposing a service.
+  Records name the actor only from that context: `requested_by` / `reported_by`
+  hold the authenticated actor or `unknown`, never a payload value. What the
+  payload claimed is kept separately as `claimed_actor`; a row whose
+  `authenticated_actor` is null marks a path that is not wired to identity yet.
 - callers must keep SQLite/JSONL evidence destinations outside scanned source repositories.
 
 Do not treat a passing unit test or a valid Registry snapshot as proof that a

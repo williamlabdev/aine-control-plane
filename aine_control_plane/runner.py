@@ -7,7 +7,7 @@ from typing import Any, Callable, Iterable, Mapping
 from urllib.parse import urlsplit
 from uuid import uuid4
 
-from .contracts import AdapterContext
+from .contracts import AdapterContext, attribute_actor
 from .remediation import RemediationWorkflow
 from .store import LocalRecordStore
 from .validation import find_local_paths
@@ -39,20 +39,20 @@ _RUNNER_SESSION_FIELDS = {
     "validation_report_ids", "evidence_ids", "workspace_ref", "requested_by",
     "created_at", "reported_at", "reported_by", "updated_at", "previous_revision",
     "result", "mutation_scope", "read_only",
-    "correlation_id",
+    "correlation_id", "authenticated_actor", "claimed_actor",
 }
 _PATCH_ARTIFACT_FIELDS = {
     "schema", "patch_id", "revision", "status", "session_id", "execution_id",
     "plan_id", "format", "content_digest", "artifact_ref", "base_revisions",
     "files", "file_count", "change_summary", "evidence_ids", "reported_by",
     "created_at", "mutation_scope", "read_only",
-    "correlation_id",
+    "correlation_id", "authenticated_actor", "claimed_actor",
 }
 _VALIDATION_REPORT_FIELDS = {
     "schema", "report_id", "revision", "status", "session_id", "execution_id",
     "plan_id", "summary", "checks", "missing_check_ids", "evidence_ids",
     "runner_kind", "reported_by", "created_at", "mutation_scope", "read_only",
-    "correlation_id",
+    "correlation_id", "authenticated_actor", "claimed_actor",
 }
 _PATCH_FILE_FIELDS = {"path", "old_path", "change"}
 _VALIDATION_CHECK_FIELDS = {"check_id", "status", "summary", "evidence_ids"}
@@ -413,7 +413,7 @@ class RunnerWorkflow:
             "patch_artifact_ids": [],
             "validation_report_ids": [],
             "evidence_ids": evidence_ids,
-            "requested_by": str(request.get("requested_by") or context.actor.get("id", "unknown")),
+            **attribute_actor(request, context, "requested_by"),
             "created_at": str(request.get("created_at") or self._clock()),
             "mutation_scope": {"source_repositories": False, "git": False, "deployment": False},
             "read_only": True,
@@ -529,7 +529,7 @@ class RunnerWorkflow:
             "file_count": request.get("file_count", len(request.get("files", [])) if isinstance(request.get("files"), list) else 0),
             "change_summary": str(request.get("change_summary", "")),
             "evidence_ids": evidence_ids,
-            "reported_by": str(request.get("reported_by") or context.actor.get("id", "unknown")),
+            **attribute_actor(request, context, "reported_by"),
             "created_at": str(request.get("created_at") or self._clock()),
             "mutation_scope": {"source_repositories": False, "git": False, "deployment": False},
             "read_only": True,
@@ -585,7 +585,7 @@ class RunnerWorkflow:
             "evidence_ids": evidence_ids,
             "missing_check_ids": missing_check_ids,
             "runner_kind": "local_runner",
-            "reported_by": str(request.get("reported_by") or context.actor.get("id", "unknown")),
+            **attribute_actor(request, context, "reported_by"),
             "created_at": str(request.get("created_at") or self._clock()),
             "mutation_scope": {"source_repositories": False, "git": False, "deployment": False},
             "read_only": True,

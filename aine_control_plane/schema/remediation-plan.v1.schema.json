@@ -24,6 +24,8 @@
     "acceptance_criteria": {"type": "array", "items": {"type": "string"}},
     "evidence_ids": {"type": "array", "items": {"type": "string"}},
     "requested_by": {"type": "string", "minLength": 1},
+    "authenticated_actor": {"type": ["string", "null"]},
+    "claimed_actor": {"type": ["string", "null"]},
     "owner": {"type": "string", "minLength": 1},
     "risk": {"enum": ["low", "medium", "high", "critical"]},
     "approval_required": {"type": "boolean"},

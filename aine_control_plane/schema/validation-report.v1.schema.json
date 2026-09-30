@@ -33,6 +33,8 @@
     "evidence_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
     "runner_kind": {"const": "local_runner"},
     "reported_by": {"type": "string", "minLength": 1},
+    "authenticated_actor": {"type": ["string", "null"]},
+    "claimed_actor": {"type": ["string", "null"]},
     "created_at": {"type": "string", "minLength": 1},
     "mutation_scope": {
       "type": "object",
