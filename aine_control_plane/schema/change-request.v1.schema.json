@@ -32,6 +32,8 @@
     "description": {"type": "string", "minLength": 1},
     "scope": {"type": "object"},
     "requested_by": {"type": "string", "minLength": 1},
+    "authenticated_actor": {"type": ["string", "null"]},
+    "claimed_actor": {"type": ["string", "null"]},
     "owner": {"type": "string", "minLength": 1},
     "acceptance_criteria": {"type": "array", "items": {"type": "string"}},
     "source_of_truth": {"type": "array", "items": {"type": "string"}},

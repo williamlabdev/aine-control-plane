@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from hashlib import sha256
 from typing import Any, Callable, Mapping
 
-from .contracts import AdapterContext
+from .contracts import AdapterContext, attribute_actor
 from .store import LocalRecordStore
 from .validation import canonical_digest
 
@@ -41,7 +41,7 @@ class ApprovalWorkflow:
             "approval_id": approval_id,
             "subject": dict(request.get("subject", {})),
             "scope": dict(request.get("scope", {})),
-            "requested_by": str(request.get("requested_by") or context.actor.get("id", "unknown")),
+            **attribute_actor(request, context, "requested_by"),
             "required_approvals": required_approvals,
             "required_roles": [str(value) for value in request.get("required_roles", [])],
             "evidence_ids": [str(value) for value in request.get("evidence_ids", [])],

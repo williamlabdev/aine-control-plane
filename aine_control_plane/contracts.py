@@ -51,6 +51,24 @@ class AdapterContext:
         }
 
 
+
+def attribute_actor(request: Mapping[str, Any], context: AdapterContext, field_name: str) -> dict[str, Any]:
+    """Record who acted without letting the payload name the actor.
+
+    ``field_name`` (``requested_by`` / ``reported_by``) keeps its v1 name but
+    holds only the authenticated actor from the context, or ``"unknown"`` when
+    the context carries none. The payload's value is kept beside it as
+    ``claimed_actor`` and never copied into it. A row where the two differ is a
+    finding; a null ``authenticated_actor`` marks a path that is not wired yet.
+    """
+    authenticated = context.actor.get("id") or context.actor.get("subject_id")
+    claimed = request.get(field_name)
+    return {
+        field_name: str(authenticated) if authenticated else "unknown",
+        "authenticated_actor": str(authenticated) if authenticated else None,
+        "claimed_actor": str(claimed) if claimed else None,
+    }
+
 class EvidenceSinkAdapter(Protocol):
     """Persist or forward portable records without changing their meaning."""
 

@@ -6,7 +6,7 @@ from typing import Any, Callable, Iterable, Mapping
 from uuid import uuid4
 
 from .approval import ApprovalWorkflow
-from .contracts import AdapterContext
+from .contracts import AdapterContext, attribute_actor
 from .store import LocalRecordStore
 from .validation import find_local_paths
 
@@ -176,7 +176,7 @@ class RemediationWorkflow:
             "validation": _mapping(request.get("validation")),
             "acceptance_criteria": _list_strings(request.get("acceptance_criteria", [])),
             "evidence_ids": _list_strings(request.get("evidence_ids", [])),
-            "requested_by": str(request.get("requested_by") or context.actor.get("id", "unknown")),
+            **attribute_actor(request, context, "requested_by"),
             "owner": str(request.get("owner") or context.actor.get("id", "unknown")),
             "risk": str(request.get("risk", "medium")),
             "approval_required": bool(request.get("approval_required", True)),
