@@ -39,20 +39,20 @@ _RUNNER_SESSION_FIELDS = {
     "validation_report_ids", "evidence_ids", "workspace_ref", "requested_by",
     "created_at", "reported_at", "reported_by", "updated_at", "previous_revision",
     "result", "mutation_scope", "read_only",
-    "correlation_id", "authenticated_actor", "claimed_actor",
+    "correlation_id", "authenticated_actor", "claimed_actor", "actor_source",
 }
 _PATCH_ARTIFACT_FIELDS = {
     "schema", "patch_id", "revision", "status", "session_id", "execution_id",
     "plan_id", "format", "content_digest", "artifact_ref", "base_revisions",
     "files", "file_count", "change_summary", "evidence_ids", "reported_by",
     "created_at", "mutation_scope", "read_only",
-    "correlation_id", "authenticated_actor", "claimed_actor",
+    "correlation_id", "authenticated_actor", "claimed_actor", "actor_source",
 }
 _VALIDATION_REPORT_FIELDS = {
     "schema", "report_id", "revision", "status", "session_id", "execution_id",
     "plan_id", "summary", "checks", "missing_check_ids", "evidence_ids",
     "runner_kind", "reported_by", "created_at", "mutation_scope", "read_only",
-    "correlation_id", "authenticated_actor", "claimed_actor",
+    "correlation_id", "authenticated_actor", "claimed_actor", "actor_source",
 }
 _PATCH_FILE_FIELDS = {"path", "old_path", "change"}
 _VALIDATION_CHECK_FIELDS = {"check_id", "status", "summary", "evidence_ids"}

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Iterable, Mapping
 
 from .approval import ApprovalWorkflow
+from .attribution import actor_attribution_report
 from .change_requests import ChangeRequestWorkflow
 from .contracts import AdapterContext, CONTRACT_VERSION, EvidenceSourceAdapter, IdentityAdapter
 from .governance import authorize, evaluate_policy
@@ -25,6 +26,7 @@ class ControlPlaneService:
         authorization_rules: Iterable[Mapping[str, Any]] = (),
         identity_adapter: IdentityAdapter | None = None,
         evidence_sources: Mapping[str, EvidenceSourceAdapter] | None = None,
+        attribution_owner: str | None = None,
     ) -> None:
         self.store = store
         self.portfolio = PortfolioRegistry(store)
@@ -35,6 +37,7 @@ class ControlPlaneService:
         self.authorization_rules = tuple(dict(rule) for rule in authorization_rules)
         self.identity_adapter = identity_adapter
         self.evidence_sources = dict(evidence_sources or {})
+        self.attribution_owner = attribution_owner
 
     def contract(self) -> Mapping[str, Any]:
         return {
@@ -65,6 +68,7 @@ class ControlPlaneService:
                 "patch_artifacts",
                 "validation_reports",
                 "audit_events",
+                "actor_attribution_report",
                 "retention_evaluation",
                 "evidence_export",
             ],
@@ -328,6 +332,9 @@ class ControlPlaneService:
 
     def audit_events(self, aggregate_id: str | None = None) -> list[Mapping[str, Any]]:
         return self.store.list_events(aggregate_id)
+
+    def actor_attribution(self, day: str | None = None) -> Mapping[str, Any]:
+        return actor_attribution_report(self.store.list_rows(), self.attribution_owner, day)
 
     def export(self, destination: str) -> Mapping[str, Any]:
         return self.store.export(destination)

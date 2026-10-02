@@ -135,6 +135,11 @@ class _Handler(BaseHTTPRequestHandler):
             aggregate_id = query.get("aggregate_id", [None])[0]
             self._respond(200, {"events": self.server.service.audit_events(aggregate_id), "read_only": True})
             return
+        if path == "/v1/audit/actor-attribution":
+            query = parse_qs(urlparse(self.path).query)
+            day = query.get("day", [None])[0]
+            self._respond(200, self.server.service.actor_attribution(day))
+            return
         if path.startswith("/v1/evidence/"):
             record_id = path[len("/v1/evidence/") :].strip("/")
             record = self.server.service.get_evidence(record_id)
@@ -387,6 +392,8 @@ class _Handler(BaseHTTPRequestHandler):
             "subject_id": actor_id or "anonymous",
             "roles": roles,
             "teams": teams,
+            # The reference transport does not verify X-AINE-Actor; records say so.
+            "source": "header",
         }
         return AdapterContext(
             request_id=self.headers.get("X-Request-ID", f"http.{uuid4().hex}"),
