@@ -12,6 +12,7 @@
     "requested_by": {"type": "string"},
     "authenticated_actor": {"type": ["string", "null"]},
     "claimed_actor": {"type": ["string", "null"]},
+    "actor_source": {"type": ["string", "null"]},
     "required_approvals": {"type": "integer", "minimum": 1},
     "required_roles": {"type": "array", "items": {"type": "string"}},
     "evidence_ids": {"type": "array", "items": {"type": "string"}},

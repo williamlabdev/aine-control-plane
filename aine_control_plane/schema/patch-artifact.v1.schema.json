@@ -46,6 +46,7 @@
     "reported_by": {"type": "string", "minLength": 1},
     "authenticated_actor": {"type": ["string", "null"]},
     "claimed_actor": {"type": ["string", "null"]},
+    "actor_source": {"type": ["string", "null"]},
     "created_at": {"type": "string", "minLength": 1},
     "mutation_scope": {
       "type": "object",

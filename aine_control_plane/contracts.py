@@ -60,13 +60,21 @@ def attribute_actor(request: Mapping[str, Any], context: AdapterContext, field_n
     the context carries none. The payload's value is kept beside it as
     ``claimed_actor`` and never copied into it. A row where the two differ is a
     finding; a null ``authenticated_actor`` marks a path that is not wired yet.
+
+    ``actor_source`` records how the context learned the actor (``source`` on
+    the context actor, e.g. ``header`` for the reference HTTP transport), or
+    ``unspecified`` when the caller did not say. With a self-reported source
+    such as ``header`` the caller supplied both ``authenticated_actor`` and
+    ``claimed_actor``, so the two agreeing proves nothing.
     """
     authenticated = context.actor.get("id") or context.actor.get("subject_id")
     claimed = request.get(field_name)
+    source = context.actor.get("source")
     return {
         field_name: str(authenticated) if authenticated else "unknown",
         "authenticated_actor": str(authenticated) if authenticated else None,
         "claimed_actor": str(claimed) if claimed else None,
+        "actor_source": (str(source) if source else "unspecified") if authenticated else None,
     }
 
 class EvidenceSinkAdapter(Protocol):

@@ -23,6 +23,15 @@ smallest reproducible case.
   hold the authenticated actor or `unknown`, never a payload value. What the
   payload claimed is kept separately as `claimed_actor`; a row whose
   `authenticated_actor` is null marks a path that is not wired to identity yet.
+  `actor_source` says where the context got the actor. The reference HTTP
+  transport reads an unverified `X-AINE-Actor` header and records `header`: on
+  those rows the caller wrote both `authenticated_actor` and `claimed_actor`,
+  so their agreeing proves nothing, and because write routes reject a missing
+  header, they are never null. Consumers that verify identity should set
+  `source` on the context actor (for example `token`).
+  `GET /v1/audit/actor-attribution` counts mismatched and null rows per UTC day
+  and source; it reports `unknown` until the service is given an
+  `attribution_owner` who reads it.
 - callers must keep SQLite/JSONL evidence destinations outside scanned source repositories.
 
 Do not treat a passing unit test or a valid Registry snapshot as proof that a
