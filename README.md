@@ -16,7 +16,7 @@ or a provider integration product.
 - advisory or opt-in enforced policy evaluation, including unknown and conflict states;
 - deterministic RBAC/ABAC authorization evaluation;
 - retention evaluation without deletion;
-- approval, change-request, remediation-plan, and runner-session record workflows (read-only proposals; every decision is an explicit record);
+- approval, change-request, remediation-plan, and runner-session record workflows (read-only proposals; every decision is an explicit record; decisions require a verified actor `source`, see `SECURITY.md`);
 - a reference self-hosted HTTP transport and a local React UI over the same read-only boundary;
 - JSONL, SQLite, static-fixture, and airt chain-projection reference adapters;
 - snapshot-backed `integration-observation.v1` records for report-only Orvena/airt evidence;

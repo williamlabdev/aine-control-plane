@@ -65,6 +65,12 @@ class ApprovalWorkflow:
         reason: str,
         context: AdapterContext,
     ) -> Mapping[str, Any]:
+        if context.actor.get("source") in (None, "", "header"):
+            return self._failure(
+                context,
+                "approval_identity_unverified",
+                "approval decisions need an actor whose identity and roles a consumer verified (set actor source, e.g. token)",
+            )
         request = self.store.get(approval_id)
         if request is None:
             return self._unknown(context, "approval_not_found", approval_id)
