@@ -27,7 +27,7 @@ class V1CoreTests(unittest.TestCase):
     def setUp(self):
         self.context = AdapterContext(
             "request-v1",
-            actor={"id": "agent.codex", "roles": ["approver"], "teams": ["platform"]},
+            actor={"id": "agent.codex", "roles": ["approver"], "teams": ["platform"], "source": "token"},
         )
 
     def test_policy_advisory_and_enforced_modes_preserve_unknowns(self):
@@ -182,7 +182,7 @@ class V1CoreTests(unittest.TestCase):
             self.assertEqual(approved["status"], "success")
             self.assertEqual(workflow.get("approval.release.1")["status"], "approved")
 
-            unauthorized = AdapterContext("request-unauthorized", actor={"id": "agent.other", "roles": ["developer"]})
+            unauthorized = AdapterContext("request-unauthorized", actor={"id": "agent.other", "roles": ["developer"], "source": "token"})
             rejected = workflow.decide("approval.release.1", "reject", "late", unauthorized)
             self.assertEqual(rejected["status"], "failure")
 
@@ -491,7 +491,7 @@ class RetirementProjectionTests(unittest.TestCase):
     def setUp(self):
         self.context = AdapterContext(
             "retirement-v1",
-            actor={"id": "agent.codex", "roles": ["approver"], "teams": ["platform"]},
+            actor={"id": "agent.codex", "roles": ["approver"], "teams": ["platform"], "source": "token"},
         )
         self.first = json.loads((FIXTURE_DIR / "registry_snapshot.json").read_text(encoding="utf-8"))
         self.first["snapshot_id"] = "snapshot.S1"

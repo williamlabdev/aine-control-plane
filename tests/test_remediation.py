@@ -31,7 +31,7 @@ class RemediationWorkflowTests(unittest.TestCase):
         )
         self.approver = AdapterContext(
             "remediation-approval",
-            actor={"id": "human.william", "roles": ["approver"], "teams": ["platform"]},
+            actor={"id": "human.william", "roles": ["approver"], "teams": ["platform"], "source": "token"},
         )
 
     def _plan_request(self):

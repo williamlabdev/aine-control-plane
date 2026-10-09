@@ -76,7 +76,8 @@ The frontend does not provide authentication. A non-loopback deployment must
 place it behind the Control Plane's authentication and authorization boundary.
 For local trusted proposal writes, set `VITE_AINE_ACTOR` before `npm run dev`.
 The resulting `X-AINE-Actor` header is trusted context only and is not
-authentication. Without it, the proposal form stays disabled while read-only
+authentication, so approval decisions from it are refused
+(`approval_identity_unverified`) until a consumer verifies identity. Without it, the proposal form stays disabled while read-only
 views remain available.
 The Security view is an inventory of declared boundaries and observed
 evidence, not a replacement for TLS, identity, secret management, or a

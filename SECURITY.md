@@ -28,7 +28,12 @@ smallest reproducible case.
   those rows the caller wrote both `authenticated_actor` and `claimed_actor`,
   so their agreeing proves nothing, and because write routes reject a missing
   header, they are never null. Consumers that verify identity should set
-  `source` on the context actor (for example `token`).
+  `source` on the context actor (for example `token`). Approval decisions
+  (approve and reject) fail closed with `approval_identity_unverified` unless
+  `source` is set and is not `header`, because a header caller could otherwise
+  grant itself `approver` or fill a quorum with invented actor ids; the
+  reference HTTP transport therefore cannot decide approvals until a consumer
+  verifies identity in front of it.
   `GET /v1/audit/actor-attribution` counts mismatched and null rows per UTC day
   and source; it reports `unknown` until the service is given an
   `attribution_owner` who reads it.
