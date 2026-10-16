@@ -76,6 +76,12 @@ class ApprovalWorkflow:
             return self._unknown(context, "approval_not_found", approval_id)
         if decision not in ("approve", "reject"):
             return self._failure(context, "invalid_decision", "decision must be approve or reject")
+        if request.get("actor_source") in (None, "", "header", "unspecified"):
+            return self._failure(
+                context,
+                "approval_request_unverified",
+                "the request's requested_by was not verified, so it cannot be compared with the approver; a verified caller must file it again",
+            )
 
         current = self.get(approval_id)
         if current and current["status"] in ("approved", "rejected", "expired"):
@@ -86,6 +92,8 @@ class ApprovalWorkflow:
         actor_roles = {str(value) for value in context.actor.get("roles", [])}
         if required_roles and not (required_roles & actor_roles):
             return self._failure(context, "approval_role_required", "actor does not have a required approval role")
+        if decision == "approve" and actor_id == str(request.get("requested_by")):
+            return self._failure(context, "approval_self_decision", "the requester cannot approve its own request")
 
         decision_id = "decision:" + sha256(
             f"{approval_id}:{actor_id}:{decision}:{reason}".encode("utf-8")
@@ -95,6 +103,7 @@ class ApprovalWorkflow:
             "decision_id": decision_id,
             "approval_id": approval_id,
             "actor_id": actor_id,
+            "actor_source": str(context.actor.get("source")),
             "decision": decision,
             "reason": reason,
             "evidence_ids": list(context.evidence_ids),

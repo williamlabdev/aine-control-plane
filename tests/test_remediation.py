@@ -27,7 +27,7 @@ class RemediationWorkflowTests(unittest.TestCase):
     def setUp(self):
         self.developer = AdapterContext(
             "remediation-test",
-            actor={"id": "agent.codex", "roles": ["developer"], "teams": ["platform"]},
+            actor={"id": "agent.codex", "roles": ["developer"], "teams": ["platform"], "source": "token"},
         )
         self.approver = AdapterContext(
             "remediation-approval",

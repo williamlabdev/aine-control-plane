@@ -33,7 +33,16 @@ smallest reproducible case.
   `source` is set and is not `header`, because a header caller could otherwise
   grant itself `approver` or fill a quorum with invented actor ids; the
   reference HTTP transport therefore cannot decide approvals until a consumer
-  verifies identity in front of it.
+  verifies identity in front of it. The request itself must have been filed by
+  a verified caller too: a decision on a request whose `actor_source` is
+  `header`, `unspecified` or missing fails with `approval_request_unverified`,
+  because its `requested_by` is the caller's own claim. Only then can the
+  requester be told apart from the approver, and a requester approving its own
+  request fails with `approval_self_decision` (rejecting it is allowed). Each
+  decision records its `actor_source`. Decisions recorded before the source
+  gate store none; `unverified_decision_report` lists the approvals whose
+  status depends on them, using the server-set `decided_at`, without changing
+  them.
   `GET /v1/audit/actor-attribution` counts mismatched and null rows per UTC day
   and source; it reports `unknown` until the service is given an
   `attribution_owner` who reads it.
