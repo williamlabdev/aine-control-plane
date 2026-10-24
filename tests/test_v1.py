@@ -178,7 +178,8 @@ class V1CoreTests(unittest.TestCase):
             }
             created = workflow.create(request, self.context)
             self.assertEqual(created["status"], "success")
-            approved = workflow.decide("approval.release.1", "approve", "validated", self.context)
+            approver = AdapterContext("request-approver", actor={"id": "human.reviewer", "roles": ["approver"], "source": "token"})
+            approved = workflow.decide("approval.release.1", "approve", "validated", approver)
             self.assertEqual(approved["status"], "success")
             self.assertEqual(workflow.get("approval.release.1")["status"], "approved")
 
